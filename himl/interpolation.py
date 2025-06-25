@@ -214,7 +214,7 @@ class FromDictInjector(object):
             placeholder = "{{" + key + "}}"
             if placeholder not in line:
                 continue
-            elif isinstance(value, (int, bool)):
+            elif isinstance(value, (int, bool)) and is_full_interpolation(line):
                 return value
             elif not is_interpolation(value):
                 line = line.replace(placeholder, value)
