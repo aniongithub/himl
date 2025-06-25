@@ -216,6 +216,8 @@ class FromDictInjector(object):
                 continue
             elif isinstance(value, (int, bool)) and is_full_interpolation(line):
                 return value
+            elif isinstance(value, (int, bool)):
+                line = line.replace(placeholder, str(value))
             elif not is_interpolation(value):
                 line = line.replace(placeholder, value)
         return line
