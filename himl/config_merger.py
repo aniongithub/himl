@@ -180,6 +180,8 @@ def parser_options(args):
                         action='store_true', help='Process config using multiprocessing')
     parser.add_argument('--filter-rules-key', dest='filter_rules', default=None, type=str,
                         help='keep these keys from the generated data, based on the configured filter key')
+    parser.add_argument('--no-strict', action='store_false', dest='strict', default=True,
+        help='Disable strict YAML validation. By default, validation is strict.')    
     return parser.parse_args(args)
 
 
