@@ -220,6 +220,12 @@ class FromDictInjector(object):
                 line = line.replace(placeholder, str(value))
             elif not is_interpolation(value):
                 line = line.replace(placeholder, value)
+        
+        # Handle environment variable interpolation
+        if "{{env(" in line:
+            env_resolver = EnvVarInterpolationsResolver(EnvVarInjector())
+            line = env_resolver.do_resolve_interpolation(line)
+        
         return line
 
     def parse_leaves(self, data, partial_key):

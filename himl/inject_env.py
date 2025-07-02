@@ -9,6 +9,7 @@
 # governing permissions and limitations under the License.
 
 from os import getenv
+import re
 
 
 class EnvVarInjector(object):
@@ -25,23 +26,18 @@ class EnvVarInjector(object):
 
     def inject_env_var(self, line):
         """
-        Check if value is an interpolation and try to resolve it.
+        Check if the line contains environment variable interpolations and resolve them.
         """
-        if not self.is_interpolation(line):
-            return line
+        # Find all occurrences of {{env(...)}} using regex
+        matches = re.findall(r"{{env\((.*?)\)}}", line)
 
-        # remove {{ and }}
-        updated_line = line[2:-2]
+        for env_var_name in matches:
+            # Resolve the environment variable value
+            env_value = getenv(env_var_name) or ""
+            # Replace the interpolation with the resolved value
+            line = line.replace(f"{{{{env({env_var_name})}}}}", env_value)
 
-        # check supported function to ensure the proper format is used
-        if not self.is_env_interpolation(updated_line):
-            return line
-
-        # remove env( and ) to extract the env Variable
-        updated_line = updated_line[4:-1]
-
-        # If env variable is missing or not set, the output will be None
-        return getenv(updated_line)
+        return line
 
     def is_env_interpolation(self, value):
         return value.startswith('env(') and value.endswith(')')
